@@ -38,6 +38,7 @@
  * * sensitivity    Number of pixels before end of element that the plugin will start fetching more items.
  * * postData       If you want to do a POST request instead of a GET request, supply this argument, either as a
  *                  function or an object. If not set, a GET request will be made.
+ * * json			If you want to load Json content set to true (default), if you want to load html content set to false.
  * * useCache       If true, the plugin will use browser storage to keep the state between page loads. If the user
  *                  clicks away from the page and then goes back, all items fetched will be rendered again, and the
  *                  user will see the same view as when he left the page. Requires http://www.jstorage.info/.
@@ -65,6 +66,7 @@ jQuery.fn.autobrowse = function (options)
         expiration: 24,
         sensitivity: 0,
         postData: null,
+		json: true,
 		stopFunction: function () {},
 		onError: function () {}
     };
@@ -180,10 +182,14 @@ jQuery.fn.autobrowse = function (options)
 
                     jQuery.post(options.url(currentOffset), data, ajaxCallback, "json").error(options.onError);
                 }
-                else
-                {
-                    jQuery.getJSON(options.url(currentOffset), ajaxCallback).error(options.onError);
-                }
+				else if(options.json)
+				{
+				    jQuery.getJSON(options.url(currentOffset), ajaxCallback).error(options.onError);
+				}
+				else
+				{
+				    jQuery.get(options.url(currentOffset), ajaxCallback).error(options.onError);
+				}
             }
         };
 
